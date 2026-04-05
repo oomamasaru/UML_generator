@@ -1,0 +1,94 @@
+[tool.ruff]
+# 1行の最大文字数。
+# Black系の標準寄りで、可読性と折り返しのバランスが取りやすい値。
+line-length = 88
+
+# 対象のPythonバージョン。
+# Python 3.12 前提。必要なら "py311" などに変更。
+target-version = "py312"
+
+# 自プロジェクトのソースルート。
+# import の first-party / third-party 判定の精度向上に使われる。
+src = ["src", "tests"]
+
+# Ruff の解析対象から除外したいディレクトリ。
+# 仮想環境やビルド成果物など、通常は lint/format 不要なものを除外する。
+extend-exclude = [
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "migrations",
+]
+
+[tool.ruff.lint]
+# 有効化するルール群。
+# 個人開発向けとして、厳しすぎず可読性を高めやすいものを選定。
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes（未使用import/変数、未定義名など）
+    "I",    # isort（import 順の整理）
+    "B",    # flake8-bugbear（バグの温床になりやすい書き方の検知）
+    "UP",   # pyupgrade（古い書き方を新しい構文へ寄せる）
+    "N",    # pep8-naming（命名規則）
+    "C4",   # flake8-comprehensions（内包表記の改善）
+    "SIM",  # flake8-simplify（冗長な書き方の簡略化）
+    "RUF",  # Ruff 独自ルール
+    "D",    # pydocstyle（DocString ルール）
+]
+
+# 無効化するルール。
+ignore = [
+    "E501", # E501 は formatter に任せる。
+    "D415", # D415 は日本語DocStringで文末の句点・記号ルールがノイズになりやすいため除外。
+]
+
+# 自動修正を許可するルール。
+# ひとまず全部自動修正可能にして、個人開発の運用を楽にする。
+fixable = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+# DocString の規約。
+# Google スタイルで固定。
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# テストコードでは DocString 必須を少し緩める。
+# 個人開発で毎回テスト関数にDocStringを書くのは重いので、運用しやすさ優先。
+"tests/**/*.py" = [
+    "D100", # public module にDocString必須
+    "D101", # public class にDocString必須
+    "D102", # public method にDocString必須
+    "D103", # public function にDocString必須
+    "D104", # public package にDocString必須
+    "D105", # magic method にDocString必須
+    "D106", # nested class にDocString必須
+    "D107", # __init__ にDocString必須
+]
+
+[tool.ruff.lint.isort]
+# "import x as y" をまとめやすくする設定。
+combine-as-imports = true
+
+# 末尾カンマがある import を複数行に分割しやすくする。
+split-on-trailing-comma = true
+
+[tool.ruff.format]
+# 文字列リテラルをダブルクオートに統一する。
+quote-style = "double"
+
+# インデントはスペースに統一する。
+indent-style = "space"
+
+# DocString 内の Python コード例も整形対象にする。
+docstring-code-format = true
+
+# DocString 内コードの行長。
+# "dynamic" は周囲のインデントを考慮して自動調整する。
+docstring-code-line-length = "dynamic"
+
+# マジックトレーリングカンマを有効にし、
+# 複数行フォーマットを安定させる。
+skip-magic-trailing-comma = false
